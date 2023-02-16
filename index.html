@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Text Boxes</title>
+    <style>
+      .textbox {
+        height: 10em;
+        width: 100%;
+        padding: 0.5em;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+      }
+      button {
+        padding: 0.5em;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+      <textarea class="textbox" name="textbox1" placeholder="Enter client's CSP headers here"></textarea>
+      <br>
+      <textarea class="textbox" name="textbox2" disabled>default-src 'self' blob:;
+connect-src  *.visualwebsiteoptimizer.com app.vwo.com; 
+style-src 'self' 'unsafe-inline' *.visualwebsiteoptimizer.com app.vwo.com s3.amazonaws.com; 
+script-src 'self' 'unsafe-eval' 'unsafe-inline' *.visualwebsiteoptimizer.com app.vwo.com;
+img-src 'self' *.visualwebsiteoptimizer.com chart.googleapis.com wingify-assets.s3.amazonaws.com app.vwo.com; 
+worker-src 'self' blob:;
+frame-src app.vwo.com *.visualwebsiteoptimizer.com;
+      </textarea>
+      <br>
+      <button type="submit" onclick="onSubmit()">Submit</button>
+    <p id="printHere"></p>
+  </body>
+  <script>
+  function onSubmit() {
+    // Get the values of the text boxes
+    var customerCSP = document.getElementsByName('textbox1')[0].value;
+    var myCSP = document.getElementsByName('textbox2')[0].value;
+    compareCSPs(customerCSP, myCSP);
+    function compareCSPs(customerCSP, myCSP) {
+  const customerDirectives = parseCSP(customerCSP);
+  const myDirectives = parseCSP(myCSP);
+
+  const gapDirectives = [];
+
+  for (const directive in myDirectives) {
+    if (!customerDirectives[directive] || customerDirectives[directive] !== myDirectives[directive]) {
+      gapDirectives.push(directive);
+    }
+  }
+
+  console.log(gapDirectives);
+  if(gapDirectives.length > 1) {
+    document.getElementById('printHere').innerHTML = 'Polices that don\'t match are: ' + gapDirectives;
+    document.getElementById('printHere').style.color = "red";
+  } else {
+    document.getElementById('printHere').innerHTML = 'CSP Headers Match';
+    document.getElementById('printHere').style.color = "green";
+  }
+  
+  return gapDirectives;
+}
+
+function parseCSP(csp) {
+  const directives = {};
+
+  csp.split(';').forEach(directive => {
+    const [name, value] = directive.trim().split(/\s+/);
+    directives[name] = value;
+  });
+
+  return directives;
+}
+
+  }
+</script>
+</html>
