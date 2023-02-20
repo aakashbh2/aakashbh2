@@ -48,12 +48,11 @@ frame-src app.vwo.com *.visualwebsiteoptimizer.com;
   const gapDirectives = [];
 
   for (const directive in myDirectives) {
-    if (customerDirectives[directive] && (customerDirectives[directive] !== myDirectives[directive])) {
+    if (!myDirectives[directive].every(value => !customerDirectives[directive] || customerDirectives[directive].includes(value))) {
       gapDirectives.push(directive);
     }
   }
 
-  console.log(gapDirectives);
   if(gapDirectives.length > 0) {
     document.getElementById('printHere').innerHTML = 'Polices that don\'t match are: ' + gapDirectives;
     document.getElementById('printHere').style.color = "red";
@@ -69,7 +68,10 @@ function parseCSP(csp) {
   const directives = {};
 
   csp.split(';').forEach(directive => {
-    const [name, value] = directive.trim().split(/\s+/);
+    var dir = directive.trim().split(/\s+/);
+    const name = dir[0];
+    dir.shift();
+    const value = dir;
     directives[name] = value;
   });
 
