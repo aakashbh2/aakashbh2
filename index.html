@@ -54,7 +54,7 @@ frame-src app.vwo.com *.visualwebsiteoptimizer.com;
   }
 
   console.log(gapDirectives);
-  if(gapDirectives.length > 1) {
+  if(gapDirectives.length > 0) {
     document.getElementById('printHere').innerHTML = 'Polices that don\'t match are: ' + gapDirectives;
     document.getElementById('printHere').style.color = "red";
   } else {
