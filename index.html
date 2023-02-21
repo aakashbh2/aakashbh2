@@ -48,7 +48,7 @@ frame-src app.vwo.com *.visualwebsiteoptimizer.com;
   const gapDirectives = [];
 
   for (const directive in myDirectives) {
-    if (!myDirectives[directive].every(value => !customerDirectives[directive] || customerDirectives[directive].includes(value))) {
+    if ((!customerDirectives[directive] || !customerDirectives[directive].includes('*')) && (!myDirectives[directive].every(value => !customerDirectives[directive] || customerDirectives[directive].includes(value)))) {
       gapDirectives.push(directive);
     }
   }
