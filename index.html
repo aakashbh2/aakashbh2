@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Text Boxes</title>
+    <script type="text/javascript" src="index.js"></script>
     <style>
       .textbox {
         height: 10em;
@@ -18,66 +19,31 @@
         border-radius: 4px;
         cursor: pointer;
       }
+      .jasmine_html-reporter {
+        display: none;
+      }
     </style>
   </head>
   <body>
-      <textarea class="textbox" name="textbox1" placeholder="Enter client's CSP headers here"></textarea>
-      <br>
-      <textarea class="textbox" name="textbox2" disabled>default-src 'self' blob:;
+    <textarea class="textbox" name="textbox1" placeholder="Enter client's CSP headers here"></textarea>
+    <br>
+    <textarea class="textbox" name="textbox2" disabled>default-src 'self' blob:;
 connect-src  *.visualwebsiteoptimizer.com app.vwo.com; 
 style-src 'self' 'unsafe-inline' *.visualwebsiteoptimizer.com app.vwo.com s3.amazonaws.com; 
 script-src 'self' 'unsafe-eval' 'unsafe-inline' *.visualwebsiteoptimizer.com app.vwo.com;
 img-src 'self' *.visualwebsiteoptimizer.com chart.googleapis.com wingify-assets.s3.amazonaws.com app.vwo.com; 
 worker-src 'self' blob:;
 frame-src app.vwo.com *.visualwebsiteoptimizer.com;
-      </textarea>
-      <br>
-      <button type="submit" onclick="onSubmit()">Submit</button>
+    </textarea>
+    <br>
+    <button type="submit" onclick="onSubmit()">Submit</button>
     <p id="printHere"></p>
+    <div id="jasmine-report"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jasmine-core@3.10.1/lib/jasmine-core/jasmine.css">
+    <script src="https://cdn.jsdelivr.net/npm/jasmine-core@3.10.1/lib/jasmine-core/jasmine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jasmine-core@3.10.1/lib/jasmine-core/jasmine-html.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jasmine-core@3.10.1/lib/jasmine-core/boot.js"></script>
+    
+    <script src="test.js"></script>
   </body>
-  <script>
-  function onSubmit() {
-    // Get the values of the text boxes
-    var customerCSP = document.getElementsByName('textbox1')[0].value;
-    var myCSP = document.getElementsByName('textbox2')[0].value;
-    compareCSPs(customerCSP, myCSP);
-    function compareCSPs(customerCSP, myCSP) {
-  const customerDirectives = parseCSP(customerCSP);
-  const myDirectives = parseCSP(myCSP);
-
-  const gapDirectives = [];
-
-  for (const directive in myDirectives) {
-    if ((!customerDirectives[directive] || !customerDirectives[directive].includes('*')) && (!myDirectives[directive].every(value => !customerDirectives[directive] || customerDirectives[directive].includes(value)))) {
-      gapDirectives.push(directive);
-    }
-  }
-
-  if(gapDirectives.length > 0) {
-    document.getElementById('printHere').innerHTML = 'Polices that don\'t match are: ' + gapDirectives;
-    document.getElementById('printHere').style.color = "red";
-  } else {
-    document.getElementById('printHere').innerHTML = 'CSP Headers Match';
-    document.getElementById('printHere').style.color = "green";
-  }
-  
-  return gapDirectives;
-}
-
-function parseCSP(csp) {
-  const directives = {};
-
-  csp.split(';').forEach(directive => {
-    var dir = directive.trim().split(/\s+/);
-    const name = dir[0];
-    dir.shift();
-    const value = dir;
-    directives[name] = value;
-  });
-
-  return directives;
-}
-
-  }
-</script>
 </html>
